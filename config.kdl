@@ -1,0 +1,243 @@
+input {
+    keyboard {
+        xkb {
+            layout "us,ru"
+            options "grp:win_space_toggle,compose:ralt,ctrl:nocaps"
+        }
+
+        numlock
+    }
+
+    touchpad {
+        tap
+        drag-lock
+        accel-profile "flat"
+        accel-speed 0.2
+        disabled-on-external-mouse
+    }
+
+    mouse {
+        accel-profile "flat"
+        accel-speed 0.2
+    }
+
+    warp-mouse-to-focus
+    focus-follows-mouse max-scroll-amount="0%"
+}
+
+output "HDMI-A-1" {
+    mode "1920x1080@143.981"
+    position x=0 y=0
+    scale 1
+}
+
+output "eDP-1" {
+    off
+}
+
+layout {
+    gaps 16
+
+    center-focused-column "never"
+    
+    preset-column-widths {
+        proportion 0.5
+        proportion 1.0
+    }
+
+    preset-window-heights {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+    }
+
+    default-column-width { proportion 1.0; }
+
+    focus-ring {
+        width 4
+        
+        active-gradient from="#bb0f0f" to="#dc8f0a" angle=45
+        inactive-color "#505050"
+        urgent-color "#9b0000"
+    }
+}
+
+hotkey-overlay { skip-at-startup; }
+
+screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+
+// STARTUP
+spawn-at-startup "xwayland-satellite"
+spawn-sh-at-startup "qs -p $HOME/code/icevoxe/shell/shell.qml"
+
+window-rule { // Block screen capture for keepass
+    match app-id=r#"^org\.keepassxc\.KeePassXC$"#
+
+    block-out-from "screen-capture"
+}
+
+window-rule { // Decoration
+    geometry-corner-radius 12
+    clip-to-geometry true
+}
+
+binds { // BINDS
+    Mod+Shift+Slash { show-hotkey-overlay; } // Show important hotkeys
+
+    // PROGRAMS
+    Mod+RETURN { spawn "alacritty"; }
+    Mod+B { spawn "firefox"; }
+    Mod+U { spawn "unityhub"; }
+    Mod+C { spawn "code"; }
+    Mod+O { spawn "obsidian"; }
+    Mod+E { spawn "thunar"; }
+    Mod+V { spawn "VirtualBox"; }
+    Mod+S { spawn "spotify"; }
+    Mod+A { spawn "steam"; }
+    Mod+P { spawn "happ"; }
+    Mod+N { spawn "prismlauncher"; }
+    Mod+H { spawn "inkscape"; }
+    Mod+X { spawn-sh "qs -p $HOME/SabaInternet/shell.qml"; }
+    Mod+K { spawn "keepassxc"; }
+
+    // Screenshots
+    Print { screenshot; }
+    Ctrl+Print { screenshot-screen; }
+    Alt+Print { screenshot-window; }
+
+    // SYSTEM
+    Mod+Shift+Q { spawn-sh "poweroff"; } // Power off
+    Mod+Shift+W { spawn-sh "reboot"; } // Reboot
+    Mod+Shift+S { spawn-sh "systemctl suspend"; } // Suspend
+    Mod+Shift+P { power-off-monitors; } // Power off monitors
+    Mod+Shift+E { quit; } // Exit
+    Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; } // Keyboard shortcuts inhibit
+    Mod+F { maximize-column; } // Maximize column
+    Mod+Shift+F { fullscreen-window; } // Fullscreen
+    Mod+M { maximize-window-to-edges; } // Maximize window to edges
+    Mod+R { switch-preset-column-width; } // Width presets
+    Mod+Ctrl+Shift+R { switch-preset-window-height; } // Height presets
+    Mod+Ctrl+R { reset-window-height; } // Reset window heigth
+    Mod+Y { toggle-window-floating; } // Floating
+    Mod+Shift+Z { expand-column-to-available-width; } // Expand to available width
+
+    Mod+Backspace repeat=false { toggle-overview; }
+    Mod+Q repeat=false { close-window; }
+
+    // MEDIA
+    Mod+Alt+W allow-when-locked=true { spawn-sh "playerctl play-pause"; }
+    Mod+Alt+Q allow-when-locked=true { spawn-sh "playerctl previous"; }
+    Mod+Alt+E allow-when-locked=true { spawn-sh "playerctl next"; }
+
+    Mod+Alt+Z allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+ -l 1.0"; }
+    Mod+Alt+X allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-"; }
+
+    Mod+Alt+C allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
+    Mod+Alt+V allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
+
+    // Workspace focus
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+
+    // Move to workspace
+    Mod+Ctrl+1 { move-column-to-workspace 1; }
+    Mod+Ctrl+2 { move-column-to-workspace 2; }
+    Mod+Ctrl+3 { move-column-to-workspace 3; }
+    Mod+Ctrl+4 { move-column-to-workspace 4; }
+    Mod+Ctrl+5 { move-column-to-workspace 5; }
+    Mod+Ctrl+6 { move-column-to-workspace 6; }
+    Mod+Ctrl+7 { move-column-to-workspace 7; }
+    Mod+Ctrl+8 { move-column-to-workspace 8; }
+    Mod+Ctrl+9 { move-column-to-workspace 9; }
+
+    // LAPTOP
+    XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+ -l 1.0"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-"; }
+    XF86AudioMute        allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
+    XF86AudioMicMute     allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
+
+    XF86AudioPlay        allow-when-locked=true { spawn-sh "playerctl play-pause"; }
+    XF86AudioStop        allow-when-locked=true { spawn-sh "playerctl stop"; }
+    XF86AudioPrev        allow-when-locked=true { spawn-sh "playerctl previous"; }
+    XF86AudioNext        allow-when-locked=true { spawn-sh "playerctl next"; }
+
+    XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
+
+    // Navigation focus
+    Mod+Right { focus-column-right; }
+    Mod+Shift+WheelScrollDown { focus-column-right; }
+    Mod+WheelScrollRight { focus-column-right; }
+    Mod+Left  { focus-column-left; }
+    Mod+WheelScrollLeft { focus-column-left; }
+    Mod+Shift+WheelScrollUp { focus-column-left; }
+    Mod+Up    { focus-window-up; }
+    Mod+Down  { focus-window-down; }
+
+    // Navigation move
+    Mod+Ctrl+Right { move-column-right; }
+    Mod+Ctrl+Shift+WheelScrollDown { move-column-right; }
+    Mod+Ctrl+WheelScrollRight { move-column-right; }
+    Mod+Ctrl+Left  { move-column-left; }
+    Mod+Ctrl+WheelScrollLeft  { move-column-left; }
+    Mod+Ctrl+Shift+WheelScrollUp   { move-column-left; }
+    Mod+Ctrl+Up    { move-window-up; }
+    Mod+Ctrl+Down  { move-window-down; }
+
+    // Monitor focus
+    Mod+Shift+Left  { focus-monitor-left; }
+    Mod+Shift+Down  { focus-monitor-down; }
+    Mod+Shift+Up    { focus-monitor-up; }
+    Mod+Shift+Right { focus-monitor-right; }
+
+    // Monitor move
+    Mod+Shift+Ctrl+Left  { move-column-to-monitor-left; }
+    Mod+Shift+Ctrl+Down  { move-column-to-monitor-down; }
+    Mod+Shift+Ctrl+Up    { move-column-to-monitor-up; }
+    Mod+Shift+Ctrl+Right { move-column-to-monitor-right; }
+
+    // Postition focus
+    Mod+Home { focus-column-first; }
+    Mod+End  { focus-column-last; }
+
+    // Position move
+    Mod+Ctrl+Home { move-column-to-first; }
+    Mod+Ctrl+End  { move-column-to-last; }
+
+    // Focus workspace position
+    Mod+Page_Down      { focus-workspace-down; }
+    Mod+Page_Up        { focus-workspace-up; }
+    Mod+WheelScrollDown      cooldown-ms=150 { focus-workspace-down; }
+    Mod+WheelScrollUp        cooldown-ms=150 { focus-workspace-up; }
+
+    // Move workspace position
+    Mod+Ctrl+Page_Down { move-column-to-workspace-down; }
+    Mod+Ctrl+Page_Up   { move-column-to-workspace-up; }
+    Mod+Ctrl+WheelScrollDown cooldown-ms=150 { move-column-to-workspace-down; }
+    Mod+Ctrl+WheelScrollUp   cooldown-ms=150 { move-column-to-workspace-up; }
+
+    // Move workspace
+    Mod+Shift+Page_Down { move-workspace-down; }
+    Mod+Shift+Page_Up   { move-workspace-up; }
+
+    // Width change
+    Mod+Minus { set-column-width "-10%"; }
+    Mod+Equal { set-column-width "+10%"; }
+    
+    // Height change
+    Mod+Shift+Minus { set-window-height "-10%"; }
+    Mod+Shift+Equal { set-window-height "+10%"; }
+
+    // Grouping & Stacks (Column Layout)
+    Mod+Comma  { consume-window-into-column; }
+    Mod+Period { expel-window-from-column; }
+    Mod+BracketLeft  { consume-or-expel-window-left; }
+    Mod+BracketRight { consume-or-expel-window-right; }
+}
